@@ -33,43 +33,23 @@ sessionRouter.post('/signin', passport.authenticate('register'), async(req, res)
             return res.status(400).send({respuesta:'No se ha logrado registrar al usuario', mensaje:'El email ya existe'})
         }
 
-        res.redirect('/login')
+        res.status(200).send({respuesta:'Se ha creado el usuario', mensaje:'Se ha creado el usuario exitosamente'})
     }catch(error){
         res.status(500).send({respuesta:'Error al registrar el usuario', mensaje: error})
     }
 })
-/*sessionRouter.post('/login', async (req,res)=> {
-    const {email, password} = req.body;
 
-    try{
-        if(req.session.login){
-            res.status(200).send('Login ya existente')
-        }
+sessionRouter.get('/github', passport.authenticate('github', {scope:['user:email']}), async (req, res)=>{
+    res.status(200).send({respuesta:'Usuario registrado', mensaje: 'Se ha registrado el usuario exitosamente'})
+})
 
-        const user = await userModel.findOne({email: email})
-
-        if(user){
-            if(user.password == password){
-                req.session.login = true;
-                req.session.username = user.name;
-                req.session.userrol = user.rol;
-                res.status(200).send({resultado:'Bienvenido', mensaje: user})
-            }else{
-                res.status(401).send({resultado: 'Contraseña o Usuario no válido, vuelva a intentarlo'})
-            }
-
-
-        }else {
-            res.status(404).send({resultado:'El usuario no es válido.', mensaje: user})
-        }
-
-    }catch(error) {
-        res.status(400).send({respuesta: 'Error al realizar el Login', mensaje: error})
-    }
-})*/
+sessionRouter.get('/githubCallback', passport.authenticate('github', {scope:['user:email']}), async (req, res)=>{
+    req.session.user= req.user
+    res.status(200).send({respuesta:'Inicio de sesión exitoso', mensaje: 'Se ha inciciado sesión del usuario exitosamente'})
+})
 
 sessionRouter.get('/logout', async (req, res) => {
-    if (req.session.login) {
+    if (req.session.user) {
         req.session.destroy(function (err) {
             if (err) {
                 console.error('Error al destruir la sesión:', err);

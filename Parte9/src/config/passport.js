@@ -1,5 +1,6 @@
 import local from 'passport-local';
 import passport from 'passport';
+import GithubStrategy from 'passport-github2'
 import { createHash, validatePassword } from '../utils/bcrypt.js';
 import { userModel } from '../models/users.models.js';
 
@@ -25,9 +26,9 @@ const initializePassport = () => {
 
                 const userCreated = await userModel.create({
                     name: name, 
-                    surname: surname,
-                    age: age, 
+                    surname: surname, 
                     email: email, 
+                    age: age,
                     password: passHash
                 }) // A diferencia de las rutas, se debe aclarar que tipo de dato se guardará. 
                     //Especialmente en el caso de password: passHash, ya que la contraseña debe guardarse encriptada. 
@@ -64,6 +65,46 @@ const initializePassport = () => {
             }
 
         ))
+
+        //Estrategia con Github:
+        passport.use('github', new GithubStrategy({
+            clientID: process.env.CLIENT_ID,
+            clientSecret: process.env.SECRET_CLIENT,
+            callbackURL: process.env.CALLBACK_URL
+        }, async (accessToken, refreshToken, profile, done) => {
+            try {
+                console.log(accessToken)
+                console.log(refreshToken)
+                console.log(profile._json)
+                //Se asegura que los datos sean correctos
+                const user = await userModel.findOne({ email: profile._json.email })
+                //_json se coloca porque la información no estaría enviandose en un formato que yo pueda leer.
+                if (user) {
+                    done(null, false)
+                } else {
+                    const userCreated = await userModel.create({
+                        name: profile._json.name,
+                        surname: ' ',
+                        email: profile._json.email,
+                        age: 18, //Edad por defecto
+                        password: createHash(profile._json.email)
+                       
+                    })
+
+                    console.log(userCreated)
+                    //hasheo la contraseña de forma que pueda ser siempre un valor único
+                    //Aquí se guardan los datos que yo puedo tomar de github.
+                    //Por ejemplo, la edad no la puedo tomar de gh, por ese motivo, seteo una por defecto.
+
+                    done(null, userCreated)
+                }
+    
+    
+            } catch (error) {
+                done(error)
+            }
+        }))
+      
 
         //Configuración para iniciarlizar la sesión en nuestra base de datos: 
         
