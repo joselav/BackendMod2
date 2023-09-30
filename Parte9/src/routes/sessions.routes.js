@@ -43,7 +43,7 @@ sessionRouter.get('/github', passport.authenticate('github', {scope:['user:email
     res.status(200).send({respuesta:'Usuario registrado', mensaje: 'Se ha registrado el usuario exitosamente'})
 })
 
-sessionRouter.get('/githubCallback', passport.authenticate('github', {scope:['user:email']}), async (req, res)=>{
+sessionRouter.get('/githubCallback', passport.authenticate('github'), async (req, res)=>{
     req.session.user= req.user
     res.status(200).send({respuesta:'Inicio de sesión exitoso', mensaje: 'Se ha inciciado sesión del usuario exitosamente'})
 })

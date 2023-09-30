@@ -87,11 +87,9 @@ const initializePassport = () => {
                         surname: ' ',
                         email: profile._json.email,
                         age: 18, //Edad por defecto
-                        password: createHash(profile._json.email)
+                        password: createHash(profile._json.email + profile._json.name)
                        
                     })
-
-                    console.log(userCreated)
                     //hasheo la contraseña de forma que pueda ser siempre un valor único
                     //Aquí se guardan los datos que yo puedo tomar de github.
                     //Por ejemplo, la edad no la puedo tomar de gh, por ese motivo, seteo una por defecto.
