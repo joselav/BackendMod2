@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/main.js"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {
