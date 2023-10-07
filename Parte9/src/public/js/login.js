@@ -1,4 +1,4 @@
-/*const form = document.getElementById("logForms");
+const form = document.getElementById("logForms");
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -25,4 +25,10 @@ form.addEventListener('submit', async (e) => {
     .catch(error => {
         console.error("Error al iniciar sesión", error);
     });
-});*/
+});
+
+const log = document.getElementById("btnlog");
+
+log.addEventListener('click', function(){
+window.location.href= '/api/sessions/github'
+})

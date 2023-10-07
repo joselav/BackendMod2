@@ -115,13 +115,13 @@ app.get('/chat', (req,res)=>{
   res.render('chat', {styles: 'estilos.css', js: 'chat.js'});
 });
 
-/*app.get('/login', (req,res) =>{
+app.get('/login', (req,res) =>{
   res.render('login', {styles: 'estilos.css', js: 'login.js'})
-})*/
+})
 
-/*app.get('/signin', (req,res) =>{
+app.get('/signin', (req,res) =>{
   res.render('signin', {styles: 'estilos.css', js: 'signin.js'})
-})*/
+})
 
 app.get('/realtimeproducts', async (req,res)=>{
   try {
@@ -184,13 +184,13 @@ io.on('connection', (socket) => {
     socket.emit('prod', newProd)
 });
 
- /* socket.on("newUser", async (user)=> {
+ socket.on("newUser", async (user)=> {
    const {name, surname, age, email, password} = user;
    await userModel.create({name, surname, age, email, password});
    console.log('Usuario guardado en BBDD')
 
    socket.emit("user", user)
-  });*/
+  });
 
 });
 
