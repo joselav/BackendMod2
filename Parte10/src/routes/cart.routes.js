@@ -14,13 +14,6 @@ cartRouter.get('/', async (req, res)=>{
   }catch(error){res.status(400).send({respuesta: 'No se ha logrado encontrar los productos del carrito', mensaje: error})}
 })
 
-cartRouter.post('/', async (req,res)=>{
-  try{
-    const carts = await cartModel.create({})
-    res.status(200).send({respuesta: 'Se ha creado el carrito', mensaje: carts})
-  }catch(error){res.status(400).send({respuesta:'No se ha logrado crear el carrito', mensaje: error})}
-})
-
 
 cartRouter.get('/:cid', async (req, res)=>{
   const {cid} = req.params

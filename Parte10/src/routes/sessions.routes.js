@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { userModel } from "../models/users.models.js";
+import { generateToken } from "../utils/jwt.js";
 import passport from "passport";
 import { passportError, authorization } from "../utils/messagesError.js";
 
@@ -21,6 +21,10 @@ sessionRouter.post('/login', passport.authenticate('login'), async(req, res)=>{
             rol: req.user.rol
         }
 
+        const token = generateToken(req.user)
+        res.cookie('jwtCookie',token, {
+            maxAge: 43200000 //12h en ms
+        })
         res.status(200).send({payload: req.user})
     }catch(error){
         res.status(500).send({respuesta:'Error al iniciar sesión', mensaje: error})//sigue ocurriendo un error.
@@ -68,6 +72,7 @@ sessionRouter.get('/logout', async (req, res) => {
                 console.error('Error al destruir la sesión:', err);
                 res.status(500).send({ mensaje: 'Error al cerrar la sesión' });
             } else {
+                res.clearCookie('jwtCookie')
                 res.status(200).send({ mensaje: 'Sesión cerrada' });
             }
         });
