@@ -1,5 +1,5 @@
-import { cartModel } from "../models/cart.models";
-import { productsModel } from "../models/products.models";
+import { cartModel } from "../models/cart.models.js";
+import { productsModel } from "../models/products.models.js";
 import mongoose from "mongoose";
 
 export const getCart = async (req,res)=>{

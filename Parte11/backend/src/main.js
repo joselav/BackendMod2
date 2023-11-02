@@ -3,6 +3,7 @@ import appRouter from './routes/products.routes.js';
 import router from './routes/index.routes.js';
 import path from 'path';
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 //passport
 import passport from 'passport';
@@ -39,6 +40,17 @@ const __dirname = dirname(__filename)
 const PORT = 8080;
 const app =express();
 
+//cors
+const whiteList = ['http://localhost:5173/']
+
+const corsOption = {
+  origin: function(origin, callback) {
+    if(whiteList.indexOf(origin) != 1 || !origin){
+      callback(null,true)
+    }else { callback( new Error("Acceso denegado")) }
+  }
+}
+
 const appServer = app.listen(PORT, () => {
   console.log(`Server on localhost:${PORT}`)
 })
@@ -48,6 +60,7 @@ const io = new Server(appServer)
 
 //Middleware
 app.use(express.json());
+app.use(cors(corsOption))
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(process.env.SIGNED_COOKIE))
 app.use(session({
