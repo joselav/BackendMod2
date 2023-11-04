@@ -106,7 +106,7 @@ app.use('/logout', express.static(__dirname+'/public'));
 
 //Routes
 app.use('/', router);
-
+/*
 app.get('/home', async (req, res) => {
   try {
     const prodActive = await productsModel.find({ status: true }).lean();
@@ -205,5 +205,5 @@ io.on('connection', (socket) => {
 });
 
 
-
+*/
 

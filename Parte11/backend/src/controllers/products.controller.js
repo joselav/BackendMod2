@@ -11,13 +11,14 @@ export const getProds = async(req,res) =>{
         const prods = await productsModel.paginate({filter: filter}, {limit: lim, page: pag, sort:{price: asc}})
 
         if(prods){
-            return res.status(200).send(products)
+            res.send(prods);
         }
 
-        res.status(404).send({error: 'Productos no encontrados.'})
+        //Lo quité porque en frontend me da error ???
+        //res.status(404).send({error: 'Productos no encontrados.'})
 
     }catch(error){
-        res.status(500).send({error:`Error al consultar los productos ${error}`})
+       res.status(500).json({error:`Error al consultar los productos ${error}`})
     }
 
 }
@@ -75,6 +76,7 @@ export const putProd = async(req,res) =>{
 
         if(prod){
             return res.status(200).send(product) 
+            
         }
 
         res.status(404).send({error: `Error al actualizar producto.`})
