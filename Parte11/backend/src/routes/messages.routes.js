@@ -5,7 +5,7 @@ const messageRouter= Router();
 
 messageRouter.get('/', getMess)
 
-messageRouter.post('/', postMess)
+messageRouter.post('/', passportError('jwt'), authorization('user'), postMess)
 
 
 export default messageRouter;
