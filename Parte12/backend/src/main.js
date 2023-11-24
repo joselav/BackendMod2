@@ -2,8 +2,11 @@ import express from 'express';
 import appRouter from './routes/products.routes.js';
 import router from './routes/index.routes.js';
 import path from 'path';
-import cookieParser from 'cookie-parser'
-import cors from 'cors'
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+
+//MAIL:
+import nodemailer from 'nodemailer';
 
 //passport
 import passport from 'passport';
@@ -57,6 +60,66 @@ const appServer = app.listen(PORT, () => {
 
 //Socket
 const io = new Server(appServer)
+//NODE MAILER:
+let transporter = nodemailer.createTransport({
+
+  host: 'smtp.gmail.com',
+
+  port: 465,
+
+  secure: true,
+
+  auth: {
+
+      user: 'testjolav@gmail.com',
+
+      pass: process.env.PASSWORD_EMAIL,
+
+      authMethod: 'LOGIN'
+
+  }
+
+})
+
+
+
+app.get('/mail', async (req, res) => {
+
+  const resultado = await transporter.sendMail({
+
+      from: 'TEST MAIL testjolav@gmail.com',
+
+      to: 'josefinalavinia05@gmail.com',
+
+      subject: 'Hola, buenas tardes',
+
+      html:
+
+          `
+
+              <div>
+
+                  <h1>Buenas tardes</h1>
+                  <p> ya funciona, adiós </p>
+
+              </div>
+
+          `,
+      attachments: [{
+        filename: '0003.jpeg',
+        path: __dirname + '/images/0003.jpeg',
+        cid: '0003.jpeg'
+      }]
+      
+
+  })
+
+  console.log(resultado)
+
+  res.send("Email enviado")
+
+})
+
 
 //Middleware
 app.use(express.json());
@@ -90,6 +153,7 @@ mongoose.connect(process.env.MONGO_URL,  {
 .then(()=> console.log("DB conectada"))
 .catch(()=> console.error("Error en conectar DB", error))
 
+/*
 //handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname+'/views');
@@ -100,13 +164,19 @@ app.use('/realtimeproducts', express.static(__dirname+'/public'));
 app.use('/chat', express.static(__dirname+'/public'));
 app.use('/login', express.static(__dirname+'/public'));
 app.use('/signin', express.static(__dirname+'/public'));
-app.use('/logout', express.static(__dirname+'/public'));
+app.use('/logout', express.static(__dirname+'/public'));*/
 
 
 
 //Routes
 app.use('/', router);
+
+
+
 /*
+ uztl pnzp hvow jqhy
+
+
 app.get('/home', async (req, res) => {
   try {
     const prodActive = await productsModel.find({ status: true }).lean();
