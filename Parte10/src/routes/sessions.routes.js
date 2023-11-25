@@ -27,7 +27,7 @@ sessionRouter.post('/login', passport.authenticate('login'), async(req, res)=>{
         })
         res.status(200).send({payload: req.user})
     }catch(error){
-        res.status(500).send({respuesta:'Error al iniciar sesión', mensaje: error})//sigue ocurriendo un error.
+        console.error(error)
     }
 })
 

@@ -5,27 +5,30 @@ form.addEventListener('submit', async (e) => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    // Envía los datos al servidor utilizando una solicitud HTTP POST
-    fetch('/api/sessions/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.resultado === 'Bienvenido') {
-            sessionStorage.setItem("username", data.mensaje.name);
+    try {
+        const response = await fetch('/api/sessions/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+
+        const data = await response.json();
+        console.log (data);
+
+        if(response.status === 200){
             window.location.href = '/home';
         } else {
-            console.log("Oops.. se ha producido un error", data.resultado);
+            console.log("Oops.. se ha producido un error", data.response);
         }
-    })
-    .catch(error => {
+    } catch(error) {
         console.error("Error al iniciar sesión", error);
-    });
+    }
+
+    
 });
+
 
 const log = document.getElementById("btnlog");
 

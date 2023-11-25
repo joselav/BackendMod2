@@ -70,7 +70,7 @@ const initializePassport = () => {
                     const user = await userModel.findOne({email: username})
 
                     if(!user){
-                        return done(null, false) //lo mismo, no es error pero no existe el usuario, 
+                        return done(null, false, { message: 'Usuario no encontrado' }); //lo mismo, no es error pero no existe el usuario, 
                                                  //no puede inciar sesión.
                     }
 
@@ -82,7 +82,7 @@ const initializePassport = () => {
                         //Es decir, que sea la contraseña correcta. 
                     }
 
-                    return done(null, false) //Credenciales no válidas, no puede inciiar sesión. 
+                    return done(null, false, { message: 'Credenciales no válidas' }); //Credenciales no válidas, no puede inciiar sesión. 
                 }catch(error){
                     return done(error)
                 }
