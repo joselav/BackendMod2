@@ -8,6 +8,9 @@ import cors from 'cors';
 //MAIL:
 import nodemailer from 'nodemailer';
 
+///Faker:
+import {faker} from '@faker-js/faker'
+
 //passport
 import passport from 'passport';
 //mi configuración de Passport
@@ -60,6 +63,8 @@ const appServer = app.listen(PORT, () => {
 
 //Socket
 const io = new Server(appServer)
+
+
 //NODE MAILER:
 let transporter = nodemailer.createTransport({
 
@@ -153,127 +158,64 @@ mongoose.connect(process.env.MONGO_URL,  {
 .then(()=> console.log("DB conectada"))
 .catch(()=> console.error("Error en conectar DB", error))
 
-/*
-//handlebars
-app.engine('handlebars', handlebars.engine());
-app.set('views', __dirname+'/views');
-app.set('view engine', 'handlebars');
-app.use(express.static(__dirname+'/public'));
-app.use('/static', express.static(__dirname+'/public'));
-app.use('/realtimeproducts', express.static(__dirname+'/public'));
-app.use('/chat', express.static(__dirname+'/public'));
-app.use('/login', express.static(__dirname+'/public'));
-app.use('/signin', express.static(__dirname+'/public'));
-app.use('/logout', express.static(__dirname+'/public'));*/
-
-
-
 //Routes
 app.use('/', router);
+
+//FAKER: 
+app.get('/mockingproducts', () =>{
+  const modelUser = () =>{
+    return {
+      _id: faker.database.mongodbObjectId(),
+      name: faker.person.firstName(),
+      surname: faker.person.lastName(),
+      age: faker.date.birthdate(),
+      email: faker.internet.email() ,
+      password: faker.internet.password(),
+  
+    }
+  }
+
+  const createRandomUser = (cantUsers) =>{
+    const users = [];
+
+    for(let i = 0; i < cantUsers; i++){
+      users.push(modelUser())
+    }
+
+    return {usuarios: users};
+
+  }
+
+  console.log(createRandomUser(3))
+
+  const productsFaker = () =>{
+    return {
+      title:faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      price: faker.commerce.price(),
+      thumbnail:[],
+      code: faker.lorem.word(),
+      stock: faker.number.int(),
+      category:faker.commerce.department(),
+    }
+  }
+
+  const createProducts = (cantProd) =>{
+    const prods= [];
+
+    for(let i = 0; i < cantProd; i++){
+      prods.push(productsFaker())
+    }
+
+    return{ productos: prods}
+  }
+
+  console.log(createProducts(100))
+})
 
 
 
 /*
  uztl pnzp hvow jqhy
-
-
-app.get('/home', async (req, res) => {
-  try {
-    const prodActive = await productsModel.find({ status: true }).lean();
-    const username = req.session.username;
-    const userrol = req.session.userrol;
-    console.log('Username enviado al cliente:', username, userrol);
-    //console.log(prodActive)
-    res.render('home', { products: prodActive, username: username, userrol: userrol, styles: 'estilos.css', js: 'home.js' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error interno del servidor');
-  }
-});
-
-app.get('/chat', (req,res)=>{
-  res.render('chat', {styles: 'estilos.css', js: 'chat.js'});
-});
-
-app.get('/login', (req,res) =>{
-  res.render('login', {styles: 'estilos.css', js: 'login.js'})
-})
-
-app.get('/signin', (req,res) =>{
-  res.render('signin', {styles: 'estilos.css', js: 'signin.js'})
-})
-
-app.get('/realtimeproducts', async (req,res)=>{
-  try {
-    const prodActive = await productsModel.find({ status: true }).lean();
-   // console.log(prodActive)
-    res.render('realTimeProducts',{products:prodActive, styles:'estilos.css', js:'realTimeProducts.js'})
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error interno del servidor');
-  }
-  
-})
-
-
-
-
-io.on('connection', (socket) => {
-  console.log(`Usuario conectado: ${socket.id}`);
-
-  socket.on('chatMessages', async (data) => {
-      const { user, message } = data;
-
-      if (user && message) {
-          
-          try {
-            const userExist = await messageModel.findOne({user});
-
-          if(userExist){
-            userExist.messages.push({
-              date: new Date(),
-              message,
-            });
-    
-            await userExist.save();
-            console.log('Mensaje guardado en MongoDB');
-          }else { await messageModel.create({ user, message });
-          console.log('Mensaje guardado en MongoDB');}
-             
-          } catch (error) {
-              console.error('Error al guardar el mensaje en MongoDB:', error);
-          }
-
-         
-          io.emit('Message', {
-              user,
-              date: new Date(),
-              message,
-          });
-
-      } else {
-          console.log('Datos de usuario o mensaje no válidos');
-      }
-  });
-
-  socket.on("newProduct", async (newProd) => {
-    const {title, description, price, thumbnail, code, stock, category} =  newProd
-    await productsModel.create({ title, description, price, thumbnail, code, stock, category});
-    console.log('Mensaje guardado en MongoDB');
-
-    socket.emit('prod', newProd)
-});
-
- socket.on("newUser", async (user)=> {
-   const {name, surname, age, email, password} = user;
-   await userModel.create({name, surname, age, email, password});
-   console.log('Usuario guardado en BBDD')
-
-   socket.emit("user", user)
-  });
-
-});
-
-
 */
 
